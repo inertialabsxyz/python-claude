@@ -30,6 +30,26 @@ The `.claude/rules/` directory holds the enforceable rules — read them before 
 - **`.claude/rules/review-gate.md`** — spawn a review agent before every PR (hard gate).
 - **`.claude/rules/pull-requests.md`** — draft PRs to `main` + the agent run report comment.
 
+### Phased / parallel builds
+
+When a build is large enough to split across multiple agents and decomposes into modules with
+disjoint file ownership (e.g. delivery phases laid out in a `docs/…-architecture.md`), decompose
+the spec into a `prompts/` folder of self-contained phased briefs rather than one monolithic
+prompt. Two checked-in templates drive this:
+
+- **`.claude/templates/agent-coordination.md`** — the **methodology**: read it first. Derives the
+  module/file-ownership map, the dependency graph → phase assignment, parallel-vs-sequential rules,
+  the Phase 1 foundation/frozen-contracts/stubs pattern, and the final integration phase. Output is
+  one file per phase plus a `prompts/README.md` schedule.
+- **`.claude/templates/agent-prompts.md`** — the **scaffold**: the shape of one filled-in prompt set
+  (sequencing diagram + per-phase Branch / Context / Task / Do Not Touch / Verification).
+
+Invariants: one source of truth (phase files reference the spec by section, never restate it);
+self-contained prompts (no agent reads another's); disjoint ownership enforced by "Do Not Touch";
+stubs first (Phase 1 stubs later modules); freeze shared contracts (types, schema, config) in
+Phase 1; a consumer mocks a producer's stub, never implements it; concrete verification (commands +
+expected output); sequential by default — parallelise only when independence is proven.
+
 ### Quality gate
 
 `make check` (lint + type-check + test) **must pass before every commit** — no exceptions. If it
