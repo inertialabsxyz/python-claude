@@ -148,7 +148,7 @@ Every phase file has the same sections (see §6 template). Rules:
 - **Name the boundaries**: an explicit "Do Not Touch" list of every directory owned by
   another phase, plus "frozen" files.
 - **Make verification concrete**: runnable commands with expected output, including the
-  check that the phase's own stubs no longer throw.
+  check that the phase's own stubs no longer raise.
 
 ### Step F — Handle soft cross-phase contracts
 
