@@ -41,8 +41,8 @@ independent, make them sequential.
 
 ## 1. Inputs: the master spec
 
-Everything downstream references **one master spec** (e.g. `agent-prompt.md` or
-`planning/<spec>.md`). It is the single source of truth. Before decomposing, confirm the
+Everything downstream references **one master spec** (e.g. `docs/<spec>.md`, optionally with a
+companion architecture doc). It is the single source of truth. Before decomposing, confirm the
 spec contains: the tech stack (decided, not "pick one"), the architecture, the data
 model/schema, the core algorithms/formulas, the external interfaces (API/contracts), error
 & failure requirements, out-of-scope guardrails, and a definition of done. If any are
@@ -64,7 +64,7 @@ prompts/
 └── phase-4-<integration>.md      # Step 4 — integration, verify, docs
 ```
 
-One file per phase. The master spec stays at the repo root and is **not** duplicated.
+One file per phase. The master spec stays where it is (e.g. `docs/`) and is **not** duplicated.
 
 ---
 
@@ -98,7 +98,7 @@ src/
   <leaf-module-B>/                  → another parallel phase
   <interface-layer>/ (api/cli/...)  → another parallel phase
   <orchestrator>/ (uses A + B)      → a later sequential phase
-  scripts/verify, README, memo      → final integration phase
+  scripts/verify, README, docs      → final integration phase
 ```
 
 A clean map makes the "Do Not Touch" lists write themselves.
@@ -148,7 +148,7 @@ Every phase file has the same sections (see §6 template). Rules:
 - **Name the boundaries**: an explicit "Do Not Touch" list of every directory owned by
   another phase, plus "frozen" files.
 - **Make verification concrete**: runnable commands with expected output, including the
-  check that the phase's own stubs no longer throw.
+  check that the phase's own stubs no longer raise.
 
 ### Step F — Handle soft cross-phase contracts
 
@@ -194,7 +194,7 @@ verification *is* the spec's definition of done.
 
 ## 6. Per-phase file template
 
-```markdown
+````markdown
 # Step <N> — Phase <id>: <Name>
 
 **Branch:** `feat/phase-<id>-<short-name>`
@@ -209,13 +209,13 @@ scope statement of what this phase does and explicitly does not do.>
 
 ### Context (what prior phases delivered — you can rely on this)
 - <file/module> — <what it provides; which exports are stable contracts>
-- <your stub file> — **throws `not implemented: Phase <id>`** — yours to implement; keep
+- <your stub file> — **raises `NotImplementedError("Phase <id>")`** — yours to implement; keep
   signatures stable (imported by <later phase>).
 
 ### Your Task
 1. <action — exact file to create/modify, referencing the spec section>
 2. …
-<Include any phase-specific discipline the spec grades, e.g. error handling, fixed-point math.>
+<Include any phase-specific discipline the spec requires, e.g. error handling, fixed-point math.>
 
 ### Do Not Touch
 - `<dir>/**` — <other phase>'s domain.
@@ -227,8 +227,8 @@ scope statement of what this phase does and explicitly does not do.>
 <quality-gate command>            # → pass
 <phase-specific command>          # → <expected observable output>
 ```
-Confirm <this phase's stub> no longer throws "not implemented".
-```
+Confirm <this phase's stub> no longer raises `NotImplementedError`.
+````
 
 ---
 
@@ -261,7 +261,7 @@ siblings use separate branches and touch disjoint files; merge all before the ne
 
 ## How to dispatch
 1. Run Phase 1; review; merge. 2. Launch parallel phases concurrently; merge all.
-3. Run later sequential phases. 4. Run integration; the repo is then submission-ready.
+3. Run later sequential phases. 4. Run integration; the build is then complete.
 ```
 
 ---
@@ -291,5 +291,4 @@ siblings use separate branches and touch disjoint files; merge all before the ne
 - **Over-parallelising** → coordination overhead and conflicts exceed the wall-clock win.
   Sequence when unsure.
 - **Vague verification** ("check it works") → agents can't self-confirm. Give commands and
-  expected output, including the "stub no longer throws" check.
-```
+  expected output, including the "stub no longer raises" check.
