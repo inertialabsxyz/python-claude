@@ -11,16 +11,19 @@ a prompt handed directly to a Claude Code agent.
 TO GENERATE THE FILLED-IN VERSION FOR YOUR PROJECT:
 
   Spawn an agent with the following prompt (substituting your
-  project's planning doc path):
+  project's spec path):
 
   ---
-  You are generating an agent-prompts.md file for a new project.
+  You are generating the phased agent prompts for this project.
 
-  Read the full specification in `planning/<spec-file>.md` and
-  use it to produce a completed version of the template at
-  `.claude/templates/agent-prompts.md`.
+  Read the full specification in `docs/<spec-file>.md` and
+  decompose it following the methodology in
+  `.claude/templates/agent-coordination.md`, using
+  `.claude/templates/agent-prompts.md` as the shape of each step.
 
-  Save the result to `planning/agent-prompts.md` in this project.
+  Save the result as a `prompts/` folder: `prompts/README.md`
+  (the sequencing overview) plus one file per phase. Do not
+  produce a single combined file.
 
   Rules for filling in the template:
   1. Identify all implementation phases in the spec.
@@ -31,7 +34,7 @@ TO GENERATE THE FILLED-IN VERSION FOR YOUR PROJECT:
      - Branch name
      - Context: what is already built when this agent starts
      - Task: numbered steps matching the spec, referencing the
-       exact section of the planning doc
+       exact section of the spec
      - Do Not Touch: files/modules owned by other phases
      - Verification: concrete commands and expected output
   4. Add a stub pattern to the earliest phase that adds empty
@@ -108,7 +111,7 @@ Do not start Step 2 until Step 1 is merged to main. Each parallel pair should us
 
 **Prompt:**
 
-You are implementing Phase 1 of [Project Name]. The full specification is in `planning/[spec-file].md` under "[Phase 1 Section Name]". Read that section carefully before writing any code.
+You are implementing Phase 1 of [Project Name]. The full specification is in `docs/[spec-file].md` under "[Phase 1 Section Name]". Read that section carefully before writing any code.
 
 ### Context
 
@@ -133,7 +136,7 @@ that don't exist yet. Stubs prevent merge conflicts when parallel
 agents type-check / import against each other's future work.
 -->
 
-**Part A — Implement Phase 1** as specified in `planning/[spec-file].md`:
+**Part A — Implement Phase 1** as specified in `docs/[spec-file].md`:
 
 1. [Action 1 — be specific: file to create/modify, type/function to add]
 2. [Action 2]
@@ -176,7 +179,7 @@ Do not implement Phase 2, 3, or later content beyond the stubs listed above.
 
 **Prompt:**
 
-You are implementing [Phase 2a Name] of [Project Name]. The full specification is in `planning/[spec-file].md` under "[Phase 2a Section Name]". Read that section carefully before writing any code.
+You are implementing [Phase 2a Name] of [Project Name]. The full specification is in `docs/[spec-file].md` under "[Phase 2a Section Name]". Read that section carefully before writing any code.
 
 ### Context
 
@@ -224,7 +227,7 @@ agents from accidentally stepping on parallel or later work.
 
 **Prompt:**
 
-You are implementing [Phase 2b Name] of [Project Name]. The full specification is in `planning/[spec-file].md` under "[Phase 2b Section Name]". Read that section carefully before writing any code.
+You are implementing [Phase 2b Name] of [Project Name]. The full specification is in `docs/[spec-file].md` under "[Phase 2b Section Name]". Read that section carefully before writing any code.
 
 ### Context
 
@@ -257,7 +260,7 @@ You are implementing [Phase 2b Name] of [Project Name]. The full specification i
 
 **Prompt:**
 
-You are implementing Phase 3 of [Project Name]. The full specification is in `planning/[spec-file].md` under "[Phase 3 Section Name]". Read that section carefully before writing any code.
+You are implementing Phase 3 of [Project Name]. The full specification is in `docs/[spec-file].md` under "[Phase 3 Section Name]". Read that section carefully before writing any code.
 
 ### Context
 
